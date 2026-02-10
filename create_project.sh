@@ -1,46 +1,80 @@
 #!/bin/bash
 
-PROJECT_NAME="project"
+# Dossier principal
+mkdir -p GESTION-TOURNOIS
+cd GESTION-TOURNOIS || exit
 
-# Root
-mkdir -p "$PROJECT_NAME"
+# assets
+mkdir -p assets/css assets/js assets/images
+touch assets/css/style.css
+touch assets/css/bootstrap.min.css
+touch assets/js/main.js
+touch assets/js/jquery.min.js
+touch assets/images/logo.png
+touch assets/images/favicon.ico
 
-# Public
-mkdir -p "$PROJECT_NAME/public/assets/css"
-mkdir -p "$PROJECT_NAME/public/assets/js"
-mkdir -p "$PROJECT_NAME/public/assets/images"
+# includes
+mkdir -p includes/config includes/lib includes/templates
+touch includes/config/database.php
+touch includes/lib/auth.php
+touch includes/templates/header.php
+touch includes/templates/footer.php
+touch includes/templates/navigation.php
 
-touch "$PROJECT_NAME/public/index.php"
-touch "$PROJECT_NAME/public/login.php"
+# modules
+mkdir -p modules/auth modules/equipes modules/matches modules/tournois modules/admin
 
-touch "$PROJECT_NAME/public/index.html"
-touch "$PROJECT_NAME/public/login.html"
+# auth module
+touch modules/auth/login.php
+touch modules/auth/register.php
+touch modules/auth/logout.php
+touch modules/auth/profile.php
 
-# CSS files
-touch "$PROJECT_NAME/public/assets/css/style.css"
-touch "$PROJECT_NAME/public/assets/css/auth.css"
+# equipes module
+touch modules/equipes/index.php
+touch modules/equipes/create.php
+touch modules/equipes/edit.php
+touch modules/equipes/delete.php
+touch modules/equipes/view.php
 
-# JS files
-touch "$PROJECT_NAME/public/assets/js/main.js"
-touch "$PROJECT_NAME/public/assets/js/auth.js"
+# matches module
+touch modules/matches/index.php
+touch modules/matches/create.php
+touch modules/matches/edit.php
+touch modules/matches/results.php
 
-# App
-mkdir -p "$PROJECT_NAME/app/controllers"
-mkdir -p "$PROJECT_NAME/app/models"
-mkdir -p "$PROJECT_NAME/app/views"
+# tournois module
+touch modules/tournois/index.php
+touch modules/tournois/create.php
+touch modules/tournois/bracket.php
+touch modules/tournois/standings.php
 
-# Routes
-mkdir -p "$PROJECT_NAME/routes"
-touch "$PROJECT_NAME/routes/web.php"
+# admin module
+touch modules/admin/dashboard.php
+touch modules/admin/users.php
+touch modules/admin/settings.php
 
-# Database
-mkdir -p "$PROJECT_NAME/database"
-touch "$PROJECT_NAME/database/schema.sql"
+# api
+mkdir -p api
+touch api/equipes.php
+touch api/matches.php
+touch api/tournois.php
 
-# API
-mkdir -p "$PROJECT_NAME/api"
-touch "$PROJECT_NAME/api/matchs.php"
-touch "$PROJECT_NAME/api/equipes.php"
-touch "$PROJECT_NAME/api/resultats.php"
+# database
+mkdir -p database/backup
+touch database/schema.sql
+touch database/data.sql
 
-echo "✅ PFE project structure + HTML/CSS/JS created successfully!"
+# uploads
+mkdir -p uploads/logos uploads/documents
+
+# fichiers racine
+touch index.php
+touch login.php
+touch dashboard.php
+touch .htaccess
+touch config.php
+touch functions.php
+touch README.md
+
+echo "✅ Structure GESTION-TOURNOIS créée avec succès !"
