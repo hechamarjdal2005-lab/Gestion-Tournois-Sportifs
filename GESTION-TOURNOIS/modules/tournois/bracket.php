@@ -81,4 +81,35 @@ class BracketGenerator {
         ];
         return $names[$nbEquipes] ?? "Tour $nbEquipes";
     }
+
+    /**
+     * Générer les matchs du premier tour
+     */
+    private function generateFirstRound($tournoiId, $equipes, $nbByes) {
+        // Récupérer l'ID du premier tour
+        $tourId = $this->db->fetchColumn(
+            "SELECT id FROM tour WHERE tournoi_id = ? AND ordre = 1", 
+            [$tournoiId]
+        );
+        
+        if (!$tourId) {
+            return ['error' => 'Impossible de trouver le premier tour'];
+        }
+
+        // Calculer le nombre d'équipes qui jouent au premier tour
+        // Les équipes "Bye" sautent ce tour
+        $nbJoueursT1 = count($equipes) - $nbByes;
+        $equipesT1 = array_slice($equipes, 0, $nbJoueursT1);
+
+        // Créer les matchs
+        for ($i = 0; $i < count($equipesT1); $i += 2) {
+            if (isset($equipesT1[$i+1])) {
+                $sql = "INSERT INTO `match` (tournoi_id, tour_id, equipe_domicile_id, equipe_exterieur_id, date_match, statut) 
+                        VALUES (?, ?, ?, ?, DATE_ADD(NOW(), INTERVAL 1 DAY), 'a_venir')";
+                $this->db->execute($sql, [$tournoiId, $tourId, $equipesT1[$i]['id'], $equipesT1[$i+1]['id']]);
+            }
+        }
+
+        return ['success' => true];
+    }
 }

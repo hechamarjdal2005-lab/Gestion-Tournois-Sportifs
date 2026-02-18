@@ -5,7 +5,7 @@
  * ==========================================
  */
 
-require_once '../../includes/config/database.php';
+require_once '../../config.php';
 
 // Récupérer tous les tournois depuis la DB
 try {

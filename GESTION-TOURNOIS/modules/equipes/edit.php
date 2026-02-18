@@ -7,7 +7,7 @@
  * @author Étudiant 1 - Backend Database
  */
 
-require_once __DIR__ . '/../../includes/config/database.php';
+require_once __DIR__ . '/../../config.php';
 
 $message = '';
 $error = '';
@@ -124,16 +124,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $equipe) {
     }
 }
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier l'équipe</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container mt-5">
+<?php require_once '../../includes/templates/header.php'; ?>
+<?php require_once '../../includes/templates/navigation.php'; ?>
+
+    <div class="container-fluid py-4">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card shadow">
@@ -242,6 +236,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $equipe) {
         </div>
     </div>
     
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<?php require_once '../../includes/templates/footer.php'; ?>

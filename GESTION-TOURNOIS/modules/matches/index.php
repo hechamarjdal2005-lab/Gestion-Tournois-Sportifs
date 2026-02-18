@@ -5,7 +5,7 @@
  * ==========================================
  */
 
-require_once '../../includes/config/database.php';
+require_once '../../config.php';
 
 try {
     $db = getDB();

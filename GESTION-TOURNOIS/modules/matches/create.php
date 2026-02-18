@@ -1,7 +1,38 @@
 <?php
-$csrf_token = "simulated_csrf_token_create";
-// Simulation liste équipes pour le select
-$equipes_list = ['Les Lions', 'Les Tigres', 'FC Nord', 'Sud United'];
+require_once '../../config.php';
+require_once '../../includes/lib/auth.php'; // Assuming Auth class exists for CSRF
+
+$db = Database::getInstance();
+$message = '';
+$error = '';
+
+// Fetch real teams from DB
+try {
+    $equipes_list = $db->fetchAll("SELECT * FROM equipe ORDER BY nom ASC");
+} catch (Exception $e) {
+    $error = "Erreur de chargement des équipes";
+    $equipes_list = [];
+}
+
+// Handle Form Submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        $sql = "INSERT INTO `match` (equipe_domicile_id, equipe_exterieur_id, score_domicile, score_exterieur, date_match) 
+                VALUES (?, ?, ?, ?, ?)";
+        $params = [
+            $_POST['equipe_a'],
+            $_POST['equipe_b'],
+            $_POST['score_a'],
+            $_POST['score_b'],
+            $_POST['date_match']
+        ];
+        $db->insert($sql, $params);
+        header("Location: index.php?success=Match créé");
+        exit();
+    } catch (Exception $e) {
+        $error = "Erreur lors de la création: " . $e->getMessage();
+    }
+}
 ?>
 <?php require_once '../../includes/templates/header.php'; ?>
 <?php require_once '../../includes/templates/navigation.php'; ?>
@@ -13,8 +44,12 @@ $equipes_list = ['Les Lions', 'Les Tigres', 'FC Nord', 'Sud United'];
                 Créer un nouveau match
             </div>
             <div class="card-body">
-                <form action="index.php" method="POST" class="needs-validation" novalidate>
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
+                <?php if ($error): ?>
+                    <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+                <?php endif; ?>
+
+                <form action="" method="POST" class="needs-validation" novalidate>
+                    <!-- <input type="hidden" name="csrf_token" value="..."> Add CSRF here if Auth available -->
 
                     <div class="row mb-3">
                         <div class="col">
@@ -22,7 +57,7 @@ $equipes_list = ['Les Lions', 'Les Tigres', 'FC Nord', 'Sud United'];
                             <select class="form-select" id="equipe_a" name="equipe_a" required>
                                 <option value="" selected disabled>Choisir...</option>
                                 <?php foreach($equipes_list as $eq): ?>
-                                    <option value="<?= htmlspecialchars($eq) ?>"><?= htmlspecialchars($eq) ?></option>
+                                    <option value="<?= $eq['id'] ?>"><?= htmlspecialchars($eq['nom']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -31,7 +66,7 @@ $equipes_list = ['Les Lions', 'Les Tigres', 'FC Nord', 'Sud United'];
                             <select class="form-select" id="equipe_b" name="equipe_b" required>
                                 <option value="" selected disabled>Choisir...</option>
                                 <?php foreach($equipes_list as $eq): ?>
-                                    <option value="<?= htmlspecialchars($eq) ?>"><?= htmlspecialchars($eq) ?></option>
+                                    <option value="<?= $eq['id'] ?>"><?= htmlspecialchars($eq['nom']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>

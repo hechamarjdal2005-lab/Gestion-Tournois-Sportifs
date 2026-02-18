@@ -7,7 +7,7 @@
  * @author Étudiant 1 - Backend Database
  */
 
-require_once __DIR__ . '/../../includes/config/database.php';
+require_once __DIR__ . '/../../config.php';
 
 $message = '';
 $error = '';

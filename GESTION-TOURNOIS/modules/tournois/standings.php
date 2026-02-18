@@ -63,16 +63,10 @@ $stats = [
     )
 ];
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Classement - <?= htmlspecialchars($tournoi['nom']) ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <?php include __DIR__ . '/../../includes/templates/navigation.php'; ?>
+<?php require_once '../../includes/templates/header.php'; ?>
+<?php require_once '../../includes/templates/navigation.php'; ?>
     
-    <div class="container mt-4">
+    <div class="container-fluid py-4">
         <div class="row">
             <div class="col-md-8">
                 <h2><i class="bi bi-trophy"></i> <?= htmlspecialchars($tournoi['nom']) ?></h2>
@@ -233,6 +227,4 @@ $stats = [
     }
     </script>
     
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<?php require_once '../../includes/templates/footer.php'; ?>

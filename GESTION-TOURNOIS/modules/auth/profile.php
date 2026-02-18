@@ -101,14 +101,7 @@ $equipes = $db->fetchAll("SELECT id, nom FROM equipe ORDER BY nom");
 
 $csrf_token = generateCSRFToken();
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Profil - <?= APP_NAME ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+<?php require_once '../../includes/templates/header.php'; ?>
     <style>
         .profile-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px 0; margin-bottom: 30px; }
         .avatar { width: 120px; height: 120px; border-radius: 50%; border: 4px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
@@ -116,8 +109,6 @@ $csrf_token = generateCSRFToken();
         .stat-number { font-size: 2rem; font-weight: bold; color: #667eea; }
         .nav-tabs .nav-link.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
     </style>
-</head>
-<body>
     <!-- Navigation -->
     <?php include __DIR__ . '/../../includes/templates/navigation.php'; ?>
     
@@ -365,7 +356,6 @@ $csrf_token = generateCSRFToken();
     <!-- Footer -->
     <?php include __DIR__ . '/../../includes/templates/footer.php'; ?>
     
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Confirmation avant certaines actions
         document.querySelectorAll('form[action*="password"]').forEach(form => {
@@ -376,5 +366,3 @@ $csrf_token = generateCSRFToken();
             });
         });
     </script>
-</body>
-</html>

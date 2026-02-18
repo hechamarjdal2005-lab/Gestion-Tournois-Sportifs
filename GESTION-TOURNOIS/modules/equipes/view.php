@@ -1,7 +1,21 @@
 <?php
-// Simulation récupération ID
-$id = $_GET['id'] ?? 1;
-$equipe = ['id' => $id, 'nom' => 'Les Lions', 'ville' => 'Paris', 'coach' => 'Jean Dupont', 'fonde' => '1990'];
+require_once '../../config.php';
+
+$db = Database::getInstance();
+$id = $_GET['id'] ?? null;
+
+if (!$id) {
+    redirect('modules/equipes/index.php');
+}
+
+$equipe = $db->fetchOne("SELECT * FROM equipe WHERE id = ?", [$id]);
+
+if (!$equipe) {
+    die("Équipe introuvable");
+}
+
+// Récupérer le coach si existe (optionnel, selon schema)
+$coach = $db->fetchOne("SELECT * FROM coach WHERE equipe_id = ?", [$id]);
 ?>
 <?php require_once '../../includes/templates/header.php'; ?>
 <?php require_once '../../includes/templates/navigation.php'; ?>
@@ -22,15 +36,19 @@ $equipe = ['id' => $id, 'nom' => 'Les Lions', 'ville' => 'Paris', 'coach' => 'Je
                     </li>
                     <li class="list-group-item bg-transparent text-white d-flex justify-content-between">
                         <span>Ville :</span>
-                        <span><?= htmlspecialchars($equipe['ville']) ?></span>
+                        <span><?= htmlspecialchars($equipe['ville'] ?? 'N/A') ?></span>
+                    </li>
+                    <li class="list-group-item bg-transparent text-white d-flex justify-content-between">
+                        <span>Pays :</span>
+                        <span><?= htmlspecialchars($equipe['pays'] ?? 'N/A') ?></span>
                     </li>
                     <li class="list-group-item bg-transparent text-white d-flex justify-content-between">
                         <span>Coach :</span>
-                        <span><?= htmlspecialchars($equipe['coach']) ?></span>
+                        <span><?= htmlspecialchars(($coach['prenom'] ?? '') . ' ' . ($coach['nom'] ?? 'Non assigné')) ?></span>
                     </li>
                     <li class="list-group-item bg-transparent text-white d-flex justify-content-between">
-                        <span>Année de fondation :</span>
-                        <span><?= htmlspecialchars($equipe['fonde']) ?></span>
+                        <span>Date de création :</span>
+                        <span><?= htmlspecialchars($equipe['date_creation'] ?? 'N/A') ?></span>
                     </li>
                 </ul>
             </div>

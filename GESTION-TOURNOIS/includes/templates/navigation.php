@@ -4,19 +4,19 @@
         <i class="fas fa-trophy me-2"></i>SportManager
     </div>
     <div class="list-group list-group-flush my-3">
-        <a href="dashboard.php" class="list-group-item list-group-item-action bg-transparent second-text active">
+        <a href="<?= BASE_URL ?>dashboard.php" class="list-group-item list-group-item-action bg-transparent second-text active">
             <i class="fas fa-tachometer-alt me-2"></i>Dashboard
         </a>
-        <a href="modules/equipes/index.php" class="list-group-item list-group-item-action bg-transparent second-text">
+        <a href="<?= BASE_URL ?>modules/equipes/index.php" class="list-group-item list-group-item-action bg-transparent second-text">
             <i class="fas fa-users me-2"></i>Équipes
         </a>
-        <a href="modules/tournois/index.php" class="list-group-item list-group-item-action bg-transparent second-text">
+        <a href="<?= BASE_URL ?>modules/tournois/index.php" class="list-group-item list-group-item-action bg-transparent second-text">
             <i class="fas fa-flag me-2"></i>Tournois
         </a>
-        <a href="modules/matches/index.php" class="list-group-item list-group-item-action bg-transparent second-text">
+        <a href="<?= BASE_URL ?>modules/matches/index.php" class="list-group-item list-group-item-action bg-transparent second-text">
             <i class="fas fa-futbol me-2"></i>Matches
         </a>
-        <a href="login.php" class="list-group-item list-group-item-action bg-transparent text-danger fw-bold mt-5">
+        <a href="<?= BASE_URL ?>modules/auth/login.php" class="list-group-item list-group-item-action bg-transparent text-danger fw-bold mt-5">
             <i class="fas fa-power-off me-2"></i>Déconnexion
         </a>
     </div>
@@ -45,7 +45,7 @@
                             <li><a class="dropdown-item" href="#">Profil</a></li>
                             <li><a class="dropdown-item" href="#">Paramètres</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="login.php">Déconnexion</a></li>
+                            <li><a class="dropdown-item text-danger" href="<?= BASE_URL ?>modules/auth/login.php">Déconnexion</a></li>
                         </ul>
                     </li>
                 </ul>

@@ -4,7 +4,7 @@ require_once __DIR__ . '/includes/config/database.php';
 
 define('APP_NAME', 'Gestion Tournois Sportifs');
 define('APP_VERSION', '1.0');
-define('BASE_URL', 'http://localhost/GESTION-TOURNOIS/');
+define('BASE_URL', 'http://localhost/pfe/gestion-tournois/');
 define('ENVIRONMENT', 'development'); // ou 'production'
 
 // Session

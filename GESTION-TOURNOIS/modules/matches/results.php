@@ -158,16 +158,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_result'])) {
 
 $csrf_token = generateCSRFToken();
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Résultats des matchs</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <?php include __DIR__ . '/../../includes/templates/navigation.php'; ?>
+<?php require_once '../../includes/templates/header.php'; ?>
+<?php require_once '../../includes/templates/navigation.php'; ?>
     
-    <div class="container mt-4">
+    <div class="container-fluid py-4">
         <h2><i class="bi bi-trophy"></i> Résultats des matchs</h2>
         
         <?php if ($error): ?>
@@ -328,6 +322,4 @@ $csrf_token = generateCSRFToken();
     });
     </script>
     
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<?php require_once '../../includes/templates/footer.php'; ?>
