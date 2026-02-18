@@ -1,140 +1,66 @@
 <?php
-session_start();
-
-// Check if user is logged in
-if(!isset($_SESSION['user'])) {
-    header('Location: /login.php');
-    exit;
-}
-
-require_once '../../includes/config/database.php';
-
-$pageTitle = 'إضافة مباراة جديدة';
-include '../../includes/templates/header.php';
-include '../../includes/templates/navigation.php';
-
-// Fetch teams
-try {
-    $stmt = $pdo->query("SELECT id, nom FROM equipes ORDER BY nom ASC");
-    $equipes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch(PDOException $e) {
-    $equipes = [];
-}
-
-// Fetch tournaments
-try {
-    $stmt = $pdo->query("SELECT id, nom FROM tournois ORDER BY nom ASC");
-    $tournois = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch(PDOException $e) {
-    $tournois = [];
-}
+$csrf_token = "simulated_csrf_token_create";
+// Simulation liste équipes pour le select
+$equipes_list = ['Les Lions', 'Les Tigres', 'FC Nord', 'Sud United'];
 ?>
+<?php require_once '../../includes/templates/header.php'; ?>
+<?php require_once '../../includes/templates/navigation.php'; ?>
 
-<div class="container">
-    <div class="card" style="margin-top: 2rem; max-width: 800px; margin-left: auto; margin-right: auto;">
-        <div class="card-header">
-            <h2 class="card-title">
-                <i class="fas fa-plus"></i>
-                إضافة مباراة جديدة
-            </h2>
-        </div>
-        
-        <div class="card-body">
-            <form method="POST" action="/api/matches.php" data-validate>
-                <input type="hidden" name="action" value="create">
-                
-                <div class="form-group">
-                    <label for="tournoi_id">
-                        <i class="fas fa-trophy"></i>
-                        البطولة *
-                    </label>
-                    <select name="tournoi_id" id="tournoi_id" class="form-control" required>
-                        <option value="">-- اختر البطولة --</option>
-                        <?php foreach($tournois as $tournoi): ?>
-                            <option value="<?php echo $tournoi['id']; ?>">
-                                <?php echo htmlspecialchars($tournoi['nom'], ENT_QUOTES, 'UTF-8'); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                
-                <div class="row">
-                    <div class="col-2">
-                        <div class="form-group">
-                            <label for="equipe1_id">
-                                <i class="fas fa-shield-alt"></i>
-                                الفريق الأول *
-                            </label>
-                            <select name="equipe1_id" id="equipe1_id" class="form-control" required>
-                                <option value="">-- اختر الفريق --</option>
-                                <?php foreach($equipes as $equipe): ?>
-                                    <option value="<?php echo $equipe['id']; ?>">
-                                        <?php echo htmlspecialchars($equipe['nom'], ENT_QUOTES, 'UTF-8'); ?>
-                                    </option>
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                Créer un nouveau match
+            </div>
+            <div class="card-body">
+                <form action="index.php" method="POST" class="needs-validation" novalidate>
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
+
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="equipe_a" class="form-label">Équipe Domicile</label>
+                            <select class="form-select" id="equipe_a" name="equipe_a" required>
+                                <option value="" selected disabled>Choisir...</option>
+                                <?php foreach($equipes_list as $eq): ?>
+                                    <option value="<?= htmlspecialchars($eq) ?>"><?= htmlspecialchars($eq) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="equipe_b" class="form-label">Équipe Extérieur</label>
+                            <select class="form-select" id="equipe_b" name="equipe_b" required>
+                                <option value="" selected disabled>Choisir...</option>
+                                <?php foreach($equipes_list as $eq): ?>
+                                    <option value="<?= htmlspecialchars($eq) ?>"><?= htmlspecialchars($eq) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
                     </div>
-                    
-                    <div class="col-2">
-                        <div class="form-group">
-                            <label for="equipe2_id">
-                                <i class="fas fa-shield-alt"></i>
-                                الفريق الثاني *
-                            </label>
-                            <select name="equipe2_id" id="equipe2_id" class="form-control" required>
-                                <option value="">-- اختر الفريق --</option>
-                                <?php foreach($equipes as $equipe): ?>
-                                    <option value="<?php echo $equipe['id']; ?>">
-                                        <?php echo htmlspecialchars($equipe['nom'], ENT_QUOTES, 'UTF-8'); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
+
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="score_a" class="form-label">Score Domicile</label>
+                            <input type="number" class="form-control" id="score_a" name="score_a" min="0" required>
+                        </div>
+                        <div class="col">
+                            <label for="score_b" class="form-label">Score Extérieur</label>
+                            <input type="number" class="form-control" id="score_b" name="score_b" min="0" required>
                         </div>
                     </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="date_match">
-                        <i class="fas fa-calendar"></i>
-                        تاريخ ووقت المباراة *
-                    </label>
-                    <input 
-                        type="datetime-local" 
-                        name="date_match" 
-                        id="date_match" 
-                        class="form-control"
-                        required
-                    >
-                </div>
-                
-                <div class="form-group">
-                    <label for="lieu">
-                        <i class="fas fa-map-marker-alt"></i>
-                        مكان المباراة
-                    </label>
-                    <input 
-                        type="text" 
-                        name="lieu" 
-                        id="lieu" 
-                        class="form-control"
-                        placeholder="مثال: ملعب محمد الخامس"
-                    >
-                </div>
-                
-                <div class="card-footer" style="display: flex; gap: 1rem; justify-content: flex-end;">
-                    <a href="/modules/matches/" class="btn btn-secondary">
-                        <i class="fas fa-times"></i>
-                        إلغاء
-                    </a>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i>
-                        حفظ المباراة
-                    </button>
-                </div>
-            </form>
+
+                    <div class="mb-3">
+                        <label for="date_match" class="form-label">Date du Match</label>
+                        <input type="datetime-local" class="form-control" id="date_match" name="date_match" required>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Enregistrer le Match</button>
+                        <a href="index.php" class="btn btn-secondary">Annuler</a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
 
-<?php include '../../includes/templates/footer.php'; ?>
+<?php require_once '../../includes/templates/footer.php'; ?>

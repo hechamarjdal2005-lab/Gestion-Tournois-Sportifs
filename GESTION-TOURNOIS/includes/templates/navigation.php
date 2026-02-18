@@ -1,59 +1,56 @@
-<nav class="navbar">
-    <div class="container">
-        <div class="nav-brand">
-            <a href="/" class="logo">
-                <i class="fas fa-trophy"></i>
-                نظام البطولات
-            </a>
-            <button class="nav-toggle" id="navToggle">
-                <i class="fas fa-bars"></i>
+<!-- Sidebar -->
+<div class="sidebar bg-primary-dark text-white" id="sidebar-wrapper">
+    <div class="sidebar-heading text-center py-4 primary-text fs-4 fw-bold text-uppercase border-bottom">
+        <i class="fas fa-trophy me-2"></i>SportManager
+    </div>
+    <div class="list-group list-group-flush my-3">
+        <a href="dashboard.php" class="list-group-item list-group-item-action bg-transparent second-text active">
+            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+        </a>
+        <a href="modules/equipes/index.php" class="list-group-item list-group-item-action bg-transparent second-text">
+            <i class="fas fa-users me-2"></i>Équipes
+        </a>
+        <a href="modules/tournois/index.php" class="list-group-item list-group-item-action bg-transparent second-text">
+            <i class="fas fa-flag me-2"></i>Tournois
+        </a>
+        <a href="modules/matches/index.php" class="list-group-item list-group-item-action bg-transparent second-text">
+            <i class="fas fa-futbol me-2"></i>Matches
+        </a>
+        <a href="login.php" class="list-group-item list-group-item-action bg-transparent text-danger fw-bold mt-5">
+            <i class="fas fa-power-off me-2"></i>Déconnexion
+        </a>
+    </div>
+</div>
+
+<!-- Page Content -->
+<div class="page-content-wrapper w-100">
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-transparent border-bottom px-4 py-3">
+        <div class="container-fluid">
+            <button class="btn" id="sidebarToggle">
+                <i class="fas fa-bars text-white"></i>
             </button>
-        </div>
-        
-        <ul class="nav-menu" id="navMenu">
-            <li><a href="/" class="nav-link"><i class="fas fa-home"></i> الرئيسية</a></li>
-            <li><a href="/modules/equipes/" class="nav-link"><i class="fas fa-users"></i> الفرق</a></li>
-            <li><a href="/modules/tournois/" class="nav-link"><i class="fas fa-trophy"></i> البطولات</a></li>
-            <li><a href="/modules/matches/" class="nav-link"><i class="fas fa-futbol"></i> المباريات</a></li>
             
-            <?php if(isset($_SESSION['user'])): ?>
-                <li class="dropdown">
-                    <a href="#" class="nav-link dropdown-toggle">
-                        <i class="fas fa-user-circle"></i>
-                        <?php echo htmlspecialchars($_SESSION['user']['nom'] ?? 'المستخدم', ENT_QUOTES, 'UTF-8'); ?>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/dashboard.php"><i class="fas fa-dashboard"></i> لوحة التحكم</a></li>
-                        <li><a href="/modules/auth/profile.php"><i class="fas fa-user"></i> الملف الشخصي</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a href="/modules/auth/logout.php"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a></li>
-                    </ul>
-                </li>
-            <?php else: ?>
-                <li><a href="/login.php" class="nav-link btn-login"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</a></li>
-            <?php endif; ?>
-        </ul>
-    </div>
-</nav>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-<?php if(isset($_SESSION['success_message'])): ?>
-    <div class="alert alert-success alert-dismissible">
-        <button class="alert-close">&times;</button>
-        <i class="fas fa-check-circle"></i>
-        <?php 
-            echo htmlspecialchars($_SESSION['success_message'], ENT_QUOTES, 'UTF-8'); 
-            unset($_SESSION['success_message']);
-        ?>
-    </div>
-<?php endif; ?>
-
-<?php if(isset($_SESSION['error_message'])): ?>
-    <div class="alert alert-danger alert-dismissible">
-        <button class="alert-close">&times;</button>
-        <i class="fas fa-exclamation-circle"></i>
-        <?php 
-            echo htmlspecialchars($_SESSION['error_message'], ENT_QUOTES, 'UTF-8'); 
-            unset($_SESSION['error_message']);
-        ?>
-    </div>
-<?php endif; ?>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle second-text fw-bold" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-2"></i>Admin
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#">Profil</a></li>
+                            <li><a class="dropdown-item" href="#">Paramètres</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="login.php">Déconnexion</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container-fluid px-4 py-4">

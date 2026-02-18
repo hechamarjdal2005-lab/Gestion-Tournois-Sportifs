@@ -1,107 +1,42 @@
 <?php
-session_start();
-
-// Redirect if already logged in
-if(isset($_SESSION['user'])) {
-    header('Location: /dashboard.php');
-    exit;
-}
-
-$pageTitle = 'تسجيل الدخول';
-include 'includes/templates/header.php';
-include 'includes/templates/navigation.php';
+// Simulation de variables pour l'affichage
+$csrf_token = "simulated_csrf_token_12345"; 
 ?>
-
-<div class="container">
-    <div class="row" style="margin-top: 3rem;">
-        <!-- Login Form -->
-        <div class="col-2">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <i class="fas fa-sign-in-alt"></i>
-                        تسجيل الدخول
-                    </h2>
-                </div>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - SportManager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        body { display: flex; align-items: center; justify-content: center; height: 100vh; }
+        .login-card { width: 100%; max-width: 400px; }
+    </style>
+</head>
+<body class="bg-dark">
+    <div class="card login-card p-4">
+        <div class="card-body">
+            <h3 class="text-center mb-4 text-primary">SportManager</h3>
+            <form action="dashboard.php" method="POST" class="needs-validation" novalidate>
+                <!-- CSRF Token -->
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
                 
-                <div class="card-body">
-                    <form method="POST" action="/modules/auth/login.php" data-validate>
-                        <div class="form-group">
-                            <label for="email">
-                                <i class="fas fa-envelope"></i>
-                                البريد الإلكتروني
-                            </label>
-                            <input 
-                                type="email" 
-                                id="email"
-                                name="email" 
-                                class="form-control" 
-                                placeholder="example@email.com"
-                                required
-                            >
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="password">
-                                <i class="fas fa-lock"></i>
-                                كلمة المرور
-                            </label>
-                            <input 
-                                type="password" 
-                                id="password"
-                                name="password" 
-                                class="form-control" 
-                                placeholder="••••••••"
-                                required
-                                minlength="6"
-                            >
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" name="remember"> تذكرني
-                            </label>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">
-                            <i class="fas fa-sign-in-alt"></i>
-                            دخول
-                        </button>
-                    </form>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                    <div class="invalid-feedback">Veuillez entrer un email valide.</div>
                 </div>
-                
-                <div class="card-footer text-center">
-                    <p>ليس لديك حساب؟ <a href="/modules/auth/register.php">سجل الآن</a></p>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Mot de passe</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                    <div class="invalid-feedback">Le mot de passe est requis.</div>
                 </div>
-            </div>
-        </div>
-        
-        <!-- Info Section -->
-        <div class="col-2">
-            <div class="card" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white;">
-                <h2><i class="fas fa-info-circle"></i> مرحباً بعودتك!</h2>
-                <p>سجل دخولك للوصول إلى:</p>
-                <ul style="list-style: none; padding: 0;">
-                    <li style="margin: 1rem 0;">
-                        <i class="fas fa-check-circle"></i>
-                        إدارة الفرق والبطولات
-                    </li>
-                    <li style="margin: 1rem 0;">
-                        <i class="fas fa-check-circle"></i>
-                        تسجيل نتائج المباريات
-                    </li>
-                    <li style="margin: 1rem 0;">
-                        <i class="fas fa-check-circle"></i>
-                        متابعة الإحصائيات
-                    </li>
-                    <li style="margin: 1rem 0;">
-                        <i class="fas fa-check-circle"></i>
-                        إنشاء البطولات
-                    </li>
-                </ul>
-            </div>
+                <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+            </form>
         </div>
     </div>
-</div>
-
-<?php include 'includes/templates/footer.php'; ?>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
