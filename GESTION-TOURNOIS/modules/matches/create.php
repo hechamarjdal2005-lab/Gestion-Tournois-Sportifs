@@ -14,17 +14,31 @@ try {
     $equipes_list = [];
 }
 
+// Fetch tournaments
+try {
+    $tournois_list = $db->fetchAll("SELECT * FROM tournoi WHERE statut != 'termine' ORDER BY nom ASC");
+} catch (Exception $e) {
+    $tournois_list = [];
+}
+
 // Handle Form Submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $sql = "INSERT INTO `match` (equipe_domicile_id, equipe_exterieur_id, score_domicile, score_exterieur, date_match) 
-                VALUES (?, ?, ?, ?, ?)";
+        $tournoi_id = !empty($_POST['tournoi_id']) ? $_POST['tournoi_id'] : null;
+        $score_a = $_POST['score_a'] !== '' ? $_POST['score_a'] : null;
+        $score_b = $_POST['score_b'] !== '' ? $_POST['score_b'] : null;
+        $statut = ($score_a !== null && $score_b !== null) ? 'termine' : 'planifie';
+
+        $sql = "INSERT INTO `match` (tournoi_id, equipe_domicile_id, equipe_exterieur_id, score_domicile, score_exterieur, date_match, statut) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)";
         $params = [
+            $tournoi_id,
             $_POST['equipe_a'],
             $_POST['equipe_b'],
-            $_POST['score_a'],
-            $_POST['score_b'],
-            $_POST['date_match']
+            $score_a,
+            $score_b,
+            $_POST['date_match'],
+            $statut
         ];
         $db->insert($sql, $params);
         header("Location: index.php?success=Match créé");
@@ -51,6 +65,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <form action="" method="POST" class="needs-validation" novalidate>
                     <!-- <input type="hidden" name="csrf_token" value="..."> Add CSRF here if Auth available -->
 
+                    <div class="mb-3">
+                        <label for="tournoi_id" class="form-label">Tournoi (Optionnel)</label>
+                        <select class="form-select" id="tournoi_id" name="tournoi_id">
+                            <option value="">-- Match Amical / Hors Tournoi --</option>
+                            <?php foreach($tournois_list as $t): ?>
+                                <option value="<?= $t['id'] ?>"><?= htmlspecialchars($t['nom']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
                     <div class="row mb-3">
                         <div class="col">
                             <label for="equipe_a" class="form-label">Équipe Domicile</label>
@@ -75,11 +99,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="row mb-3">
                         <div class="col">
                             <label for="score_a" class="form-label">Score Domicile</label>
-                            <input type="number" class="form-control" id="score_a" name="score_a" min="0" required>
+                            <input type="number" class="form-control" id="score_a" name="score_a" min="0" placeholder="Laisser vide si à venir">
                         </div>
                         <div class="col">
                             <label for="score_b" class="form-label">Score Extérieur</label>
-                            <input type="number" class="form-control" id="score_b" name="score_b" min="0" required>
+                            <input type="number" class="form-control" id="score_b" name="score_b" min="0" placeholder="Laisser vide si à venir">
                         </div>
                     </div>
 

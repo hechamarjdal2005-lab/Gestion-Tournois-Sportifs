@@ -6,6 +6,9 @@
  */
 
 require_once '../../config.php';
+require_once '../../includes/lib/auth.php';
+
+$isAdmin = (isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'super_admin'));
 
 // Récupérer toutes les équipes depuis la DB
 try {
@@ -28,9 +31,11 @@ try {
             <h2 class="mb-0"><i class="fas fa-shield-alt me-2 text-primary"></i>Gestion des Équipes</h2>
             <small class="text-muted">Total: <?= count($equipes) ?> équipe(s)</small>
         </div>
+        <?php if ($isAdmin): ?>
         <a href="create.php" class="btn btn-primary">
             <i class="fas fa-plus me-1"></i> Nouvelle Équipe
         </a>
+        <?php endif; ?>
     </div>
 
     <!-- Message d'erreur -->
@@ -66,7 +71,9 @@ try {
                             <th>Nom de l'équipe</th>
                             <th>Ville</th>
                             <th>Coach</th>
+                            <?php if ($isAdmin): ?>
                             <th class="text-center">Actions</th>
+                            <?php endif; ?>
                         </tr>
                     </thead>
                     <tbody>
@@ -84,6 +91,7 @@ try {
                                 <td class="fw-bold"><?= htmlspecialchars($equipe['nom']) ?></td>
                                 <td><i class="fas fa-map-marker-alt text-muted me-1"></i><?= htmlspecialchars($equipe['ville']) ?></td>
                                 <td><i class="fas fa-user text-muted me-1"></i><?= htmlspecialchars($equipe['coach']) ?></td>
+                                <?php if ($isAdmin): ?>
                                 <td class="text-center">
                                     <a href="view.php?id=<?= $equipe['id'] ?>" 
                                        class="btn btn-sm btn-info text-white me-1" title="Voir">
@@ -99,6 +107,7 @@ try {
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </td>
+                                <?php endif; ?>
                             </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>

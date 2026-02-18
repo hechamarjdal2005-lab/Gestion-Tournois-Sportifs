@@ -44,7 +44,7 @@ $coach = $db->fetchOne("SELECT * FROM coach WHERE equipe_id = ?", [$id]);
                     </li>
                     <li class="list-group-item bg-transparent text-white d-flex justify-content-between">
                         <span>Coach :</span>
-                        <span><?= htmlspecialchars(($coach['prenom'] ?? '') . ' ' . ($coach['nom'] ?? 'Non assigné')) ?></span>
+                        <span><?= htmlspecialchars($coach ? ($coach['prenom'] . ' ' . $coach['nom']) : 'Non assigné') ?></span>
                     </li>
                     <li class="list-group-item bg-transparent text-white d-flex justify-content-between">
                         <span>Date de création :</span>

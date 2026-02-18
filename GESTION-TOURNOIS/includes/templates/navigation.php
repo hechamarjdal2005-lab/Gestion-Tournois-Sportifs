@@ -1,3 +1,7 @@
+<?php
+// Récupérer le rôle pour l'affichage conditionnel
+$userRole = $_SESSION['role'] ?? 'spectateur';
+?>
 <!-- Sidebar -->
 <div class="sidebar bg-primary-dark text-white" id="sidebar-wrapper">
     <div class="sidebar-heading text-center py-4 primary-text fs-4 fw-bold text-uppercase border-bottom">
@@ -7,6 +11,8 @@
         <a href="<?= BASE_URL ?>dashboard.php" class="list-group-item list-group-item-action bg-transparent second-text active">
             <i class="fas fa-tachometer-alt me-2"></i>Dashboard
         </a>
+        
+        <!-- Liens visibles pour tous, mais contenu restreint -->
         <a href="<?= BASE_URL ?>modules/equipes/index.php" class="list-group-item list-group-item-action bg-transparent second-text">
             <i class="fas fa-users me-2"></i>Équipes
         </a>
@@ -16,7 +22,13 @@
         <a href="<?= BASE_URL ?>modules/matches/index.php" class="list-group-item list-group-item-action bg-transparent second-text">
             <i class="fas fa-futbol me-2"></i>Matches
         </a>
-        <a href="<?= BASE_URL ?>modules/auth/login.php" class="list-group-item list-group-item-action bg-transparent text-danger fw-bold mt-5">
+        
+        <?php if($userRole === 'admin' || $userRole === 'super_admin'): ?>
+        <div class="sidebar-heading text-muted small px-3 mt-3">ADMINISTRATION</div>
+        <!-- Ajouter ici d'autres liens admin si nécessaire -->
+        <?php endif; ?>
+
+        <a href="<?= BASE_URL ?>modules/auth/logout.php" class="list-group-item list-group-item-action bg-transparent text-danger fw-bold mt-5">
             <i class="fas fa-power-off me-2"></i>Déconnexion
         </a>
     </div>
@@ -45,7 +57,7 @@
                             <li><a class="dropdown-item" href="#">Profil</a></li>
                             <li><a class="dropdown-item" href="#">Paramètres</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="<?= BASE_URL ?>modules/auth/login.php">Déconnexion</a></li>
+                            <li><a class="dropdown-item text-danger" href="<?= BASE_URL ?>modules/auth/logout.php">Déconnexion</a></li>
                         </ul>
                     </li>
                 </ul>

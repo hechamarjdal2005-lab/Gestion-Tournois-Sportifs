@@ -316,7 +316,7 @@ class TournoiAPI {
             }
             
             // Inscription
-            $sql = "INSERT INTO inscription_tournoi (tournoi_id, equipe_id, statut) VALUES (?, ?, 'en_attente')";
+            $sql = "INSERT INTO inscription_tournoi (tournoi_id, equipe_id, statut) VALUES (?, ?, 'accepte')";
             $this->db->insert($sql, [$tournoiId, $equipeId]);
             
             return $this->response(201, [

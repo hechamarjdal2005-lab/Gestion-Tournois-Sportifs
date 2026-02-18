@@ -1,9 +1,17 @@
 <?php
-// modules/tournois/bracket.php - Génération bracket élimination
+/**
+ * BRACKET - Arbre du tournoi
+ * Génération et visualisation
+ */
 
 require_once __DIR__ . '/../../config.php';
 require_once __DIR__ . '/../../functions.php';
 require_once __DIR__ . '/../../includes/lib/auth.php';
+
+$auth = new Auth();
+if (!$auth->checkSession()) {
+    redirect('modules/auth/login.php');
+}
 
 class BracketGenerator {
     private $db;
@@ -42,6 +50,9 @@ class BracketGenerator {
         
         // Créer les tours
         $this->createRounds($tournoiId, $puissance);
+        
+        // Générer les matchs vides pour les tours suivants (structure visuelle)
+        $this->generatePlaceholderMatches($tournoiId);
         
         // Générer matchs premier tour
         return $this->generateFirstRound($tournoiId, $equipes, $nbByes);
@@ -112,4 +123,149 @@ class BracketGenerator {
 
         return ['success' => true];
     }
+
+    /**
+     * Générer les matchs vides pour les tours suivants (pour l'affichage complet de l'arbre)
+     */
+    private function generatePlaceholderMatches($tournoiId) {
+        // Récupérer les tours > 1
+        $tours = $this->db->fetchAll(
+            "SELECT * FROM tour WHERE tournoi_id = ? AND ordre > 1 ORDER BY ordre ASC", 
+            [$tournoiId]
+        );
+
+        foreach ($tours as $tour) {
+            // Créer le nombre de matchs prévus (vides)
+            for ($i = 0; $i < $tour['matchs_prevus']; $i++) {
+                $this->db->execute(
+                    "INSERT INTO `match` (tournoi_id, tour_id, date_match, statut) 
+                     VALUES (?, ?, NULL, 'a_venir')",
+                    [$tournoiId, $tour['id']]
+                );
+            }
+        }
+    }
 }
+
+// --- LOGIQUE DE LA PAGE ---
+
+$db = Database::getInstance();
+$tournoiId = $_GET['id'] ?? null;
+$error = '';
+$success = '';
+
+if (!$tournoiId) redirect('modules/tournois/index.php');
+
+$tournoi = $db->fetchOne("SELECT * FROM tournoi WHERE id = ?", [$tournoiId]);
+if (!$tournoi) redirect('modules/tournois/index.php');
+
+// Traitement de la génération
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate'])) {
+    $generator = new BracketGenerator();
+    
+    // Vérifier s'il y a déjà des matchs
+    $matchCount = $db->fetchColumn("SELECT COUNT(*) FROM `match` WHERE tournoi_id = ?", [$tournoiId]);
+    
+    if ($matchCount > 0) {
+        $error = "Le bracket a déjà été généré.";
+    } else {
+        $result = $generator->generateBracket($tournoiId);
+        if (isset($result['error'])) {
+            $error = $result['error'];
+        } else {
+            $success = "Arbre du tournoi généré avec succès !";
+            // Mettre à jour le statut du tournoi
+            $db->execute("UPDATE tournoi SET statut = 'en_cours' WHERE id = ?", [$tournoiId]);
+            $tournoi['statut'] = 'en_cours';
+        }
+    }
+}
+
+// Récupérer les données pour l'affichage
+$tours = $db->fetchAll("SELECT * FROM tour WHERE tournoi_id = ? ORDER BY ordre ASC", [$tournoiId]);
+$matchs = $db->fetchAll(
+    "SELECT m.*, 
+     ed.nom as equipe1, ed.logo_url as logo1,
+     ee.nom as equipe2, ee.logo_url as logo2
+     FROM `match` m
+     LEFT JOIN equipe ed ON m.equipe_domicile_id = ed.id
+     LEFT JOIN equipe ee ON m.equipe_exterieur_id = ee.id
+     WHERE m.tournoi_id = ?
+     ORDER BY m.id ASC", 
+    [$tournoiId]
+);
+?>
+<?php require_once '../../includes/templates/header.php'; ?>
+<?php require_once '../../includes/templates/navigation.php'; ?>
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2><i class="fas fa-sitemap me-2"></i>Arbre : <?= htmlspecialchars($tournoi['nom']) ?></h2>
+            <span class="badge bg-<?= $tournoi['statut'] == 'en_cours' ? 'success' : 'secondary' ?>">
+                <?= htmlspecialchars($tournoi['statut']) ?>
+            </span>
+        </div>
+        
+        <?php if (empty($tours) && ($tournoi['statut'] == 'inscription' || $tournoi['statut'] == 'configuration')): ?>
+            <form method="POST" onsubmit="return confirm('Générer le bracket ? Cela créera les matchs automatiquement.');">
+                <button type="submit" name="generate" class="btn btn-primary">
+                    <i class="fas fa-magic me-2"></i>Générer l'arbre
+                </button>
+            </form>
+        <?php endif; ?>
+    </div>
+
+    <?php if ($error): ?>
+        <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+    <?php endif; ?>
+    <?php if ($success): ?>
+        <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
+    <?php endif; ?>
+
+    <?php if (empty($tours)): ?>
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            Le tournoi n'a pas encore commencé ou l'arbre n'a pas été généré.
+        </div>
+    <?php else: ?>
+        <div class="row flex-nowrap overflow-auto pb-4">
+            <?php foreach ($tours as $tour): ?>
+                <div class="col-md-3" style="min-width: 300px;">
+                    <div class="card shadow-sm h-100 bg-dark border-secondary">
+                        <div class="card-header text-center bg-secondary text-white">
+                            <h5 class="mb-0"><?= htmlspecialchars($tour['nom']) ?></h5>
+                        </div>
+                        <div class="card-body p-2">
+                            <?php 
+                            $tourMatchs = array_filter($matchs, fn($m) => $m['tour_id'] == $tour['id']);
+                            foreach ($tourMatchs as $m): 
+                            ?>
+                                <div class="card mb-3 bg-light text-dark">
+                                    <div class="card-body p-2">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="fw-bold"><?= htmlspecialchars($m['equipe1'] ?? 'À déterminer') ?></span>
+                                            <span class="badge bg-primary"><?= $m['score_domicile'] !== null ? $m['score_domicile'] : '-' ?></span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="fw-bold"><?= htmlspecialchars($m['equipe2'] ?? 'À déterminer') ?></span>
+                                            <span class="badge bg-primary"><?= $m['score_exterieur'] !== null ? $m['score_exterieur'] : '-' ?></span>
+                                        </div>
+                                        <div class="text-center mt-1">
+                                            <small class="text-muted"><?= date('d/m H:i', strtotime($m['date_match'])) ?></small>
+                                            <?php if($m['statut'] == 'termine'): ?>
+                                                <i class="fas fa-check-circle text-success ms-1"></i>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+</div>
+
+<?php require_once '../../includes/templates/footer.php'; ?>

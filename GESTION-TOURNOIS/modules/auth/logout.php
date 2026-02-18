@@ -15,5 +15,5 @@ $auth->logout();
 $_SESSION['flash_message'] = "Vous avez été déconnecté avec succès";
 $_SESSION['flash_type'] = "success";
 
-redirect('');
+redirect('modules/auth/login.php');
 ?>

@@ -7,6 +7,16 @@ $auth = new Auth();
 $error = '';
 $success = '';
 
+// Récupérer message flash (ex: après déconnexion)
+if (isset($_SESSION['flash_message'])) {
+    if (isset($_SESSION['flash_type']) && $_SESSION['flash_type'] === 'success') {
+        $success = $_SESSION['flash_message'];
+    } else {
+        $error = $_SESSION['flash_message'];
+    }
+    unset($_SESSION['flash_message'], $_SESSION['flash_type']);
+}
+
 // Rediriger si déjà connecté
 if ($auth->checkSession()) {
     redirect('dashboard.php');

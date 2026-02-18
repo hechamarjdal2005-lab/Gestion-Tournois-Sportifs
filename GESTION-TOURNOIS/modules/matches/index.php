@@ -6,6 +6,9 @@
  */
 
 require_once '../../config.php';
+require_once '../../includes/lib/auth.php';
+
+$isAdmin = (isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'super_admin'));
 
 try {
     $db = getDB();
@@ -42,9 +45,11 @@ try {
             <h2 class="mb-0"><i class="fas fa-futbol me-2 text-success"></i>Gestion des Matches</h2>
             <small class="text-muted">Total: <?= count($matches) ?> match(es)</small>
         </div>
+        <?php if ($isAdmin): ?>
         <a href="create.php" class="btn btn-success">
             <i class="fas fa-plus me-1"></i> Créer un Match
         </a>
+        <?php endif; ?>
     </div>
 
     <!-- Message erreur -->
@@ -85,7 +90,9 @@ try {
                             <th>Terrain</th>
                             <th>Résultat</th>
                             <th>Statut</th>
+                            <?php if ($isAdmin): ?>
                             <th class="text-center">Actions</th>
+                            <?php endif; ?>
                         </tr>
                     </thead>
                     <tbody>
@@ -182,6 +189,7 @@ try {
                                         <?= ucfirst(str_replace('_', ' ', $match['statut'])) ?>
                                     </span>
                                 </td>
+                                <?php if ($isAdmin): ?>
                                 <td class="text-center">
                                     <a href="results.php?id=<?= $match['id'] ?>" 
                                        class="btn btn-sm btn-info text-white me-1" title="Résultats">
@@ -197,6 +205,7 @@ try {
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </td>
+                                <?php endif; ?>
                             </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>

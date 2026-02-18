@@ -1,11 +1,10 @@
 <?php
-session_start();
+require_once 'config.php';
 $pageTitle = 'Accueil - Système de Gestion des Tournois';
 include 'includes/templates/header.php';
 // ❌ navigation.php supprimée — pas de sidebar sur la page d'accueil
 
 // Stats réelles depuis la DB
-require_once 'includes/config/database.php';
 try {
     $db = getDB();
     $nb_equipes  = $db->fetchColumn("SELECT COUNT(*) FROM equipe");
@@ -309,13 +308,13 @@ body { margin: 0 !important; padding: 0 !important; }
             <i class="fas fa-trophy"></i> SPORTMANAGER
         </a>
         <div class="topbar-links">
-            <a href="modules/equipes/index.php">Équipes</a>
-            <a href="modules/tournois/index.php">Tournois</a>
-            <a href="modules/matches/index.php">Matches</a>
-            <?php if(!isset($_SESSION['user'])): ?>
-                <a href="modules/auth/login.php" class="topbar-btn">Se connecter</a>
+            <a href="<?= BASE_URL ?>modules/equipes/index.php">Équipes</a>
+            <a href="<?= BASE_URL ?>modules/tournois/index.php">Tournois</a>
+            <a href="<?= BASE_URL ?>modules/matches/index.php">Matches</a>
+            <?php if(!isLoggedIn()): ?>
+                <a href="<?= BASE_URL ?>modules/auth/login.php" class="topbar-btn">Se connecter</a>
             <?php else: ?>
-                <a href="dashboard.php" class="topbar-btn">
+                <a href="<?= BASE_URL ?>dashboard.php" class="topbar-btn">
                     <i class="fas fa-th-large"></i> Dashboard
                 </a>
             <?php endif; ?>
@@ -342,18 +341,18 @@ body { margin: 0 !important; padding: 0 !important; }
                 Suivez les résultats en temps réel et gérez les classements automatiquement.
             </p>
             <div class="hero-actions">
-                <?php if(!isset($_SESSION['user'])): ?>
-                    <a href="modules/auth/login.php" class="btn-primary-hero">
+                <?php if(!isLoggedIn()): ?>
+                    <a href="<?= BASE_URL ?>modules/auth/login.php" class="btn-primary-hero">
                         <i class="fas fa-sign-in-alt"></i> Se connecter
                     </a>
-                    <a href="modules/tournois/index.php" class="btn-ghost-hero">
+                    <a href="<?= BASE_URL ?>modules/tournois/index.php" class="btn-ghost-hero">
                         Voir les tournois <i class="fas fa-arrow-right"></i>
                     </a>
                 <?php else: ?>
-                    <a href="dashboard.php" class="btn-primary-hero">
+                    <a href="<?= BASE_URL ?>dashboard.php" class="btn-primary-hero">
                         <i class="fas fa-th-large"></i> Tableau de bord
                     </a>
-                    <a href="modules/matches/index.php" class="btn-ghost-hero">
+                    <a href="<?= BASE_URL ?>modules/matches/index.php" class="btn-ghost-hero">
                         Derniers matches <i class="fas fa-arrow-right"></i>
                     </a>
                 <?php endif; ?>
@@ -386,21 +385,21 @@ body { margin: 0 !important; padding: 0 !important; }
         <p class="section-tag fade-up">Fonctionnalités</p>
         <h2 class="section-title fade-up delay-1">Tout ce dont vous<br>avez besoin</h2>
         <div class="features-grid">
-            <a href="modules/equipes/index.php" class="feature-card fade-up">
+            <a href="<?= BASE_URL ?>modules/equipes/index.php" class="feature-card fade-up">
                 <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
                 <h3 class="feature-title">Gestion des Équipes</h3>
                 <p class="feature-desc">Ajoutez et gérez toutes vos équipes avec joueurs, coaches et informations détaillées.</p>
                 <span class="feature-link">Voir les équipes <i class="fas fa-arrow-right"></i></span>
                 <span class="feature-num">01</span>
             </a>
-            <a href="modules/tournois/index.php" class="feature-card fade-up delay-1">
+            <a href="<?= BASE_URL ?>modules/tournois/index.php" class="feature-card fade-up delay-1">
                 <div class="feature-icon"><i class="fas fa-trophy"></i></div>
                 <h3 class="feature-title">Gestion des Tournois</h3>
                 <p class="feature-desc">Organisez des compétitions élimination directe, poules ou format mixte avec brackets automatiques.</p>
                 <span class="feature-link">Voir les tournois <i class="fas fa-arrow-right"></i></span>
                 <span class="feature-num">02</span>
             </a>
-            <a href="modules/matches/index.php" class="feature-card fade-up delay-2">
+            <a href="<?= BASE_URL ?>modules/matches/index.php" class="feature-card fade-up delay-2">
                 <div class="feature-icon"><i class="fas fa-futbol"></i></div>
                 <h3 class="feature-title">Suivi des Matches</h3>
                 <p class="feature-desc">Enregistrez scores, prolongations et tirs au but. Classements mis à jour automatiquement.</p>
@@ -411,13 +410,13 @@ body { margin: 0 !important; padding: 0 !important; }
     </section>
 
     <!-- ══ CTA ══ -->
-    <?php if(!isset($_SESSION['user'])): ?>
+    <?php if(!isLoggedIn()): ?>
     <div class="cta-section fade-up">
         <div class="cta-text">
             <h2>Prêt à commencer ?</h2>
             <p>Connectez-vous pour accéder à toutes les fonctionnalités de la plateforme.</p>
         </div>
-        <a href="/login.php" class="btn-primary-hero">
+        <a href="<?= BASE_URL ?>modules/auth/login.php" class="btn-primary-hero">
             <i class="fas fa-sign-in-alt"></i> Se connecter maintenant
         </a>
     </div>

@@ -6,6 +6,9 @@
  */
 
 require_once '../../config.php';
+require_once '../../includes/lib/auth.php';
+
+$isAdmin = (isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'super_admin'));
 
 // Récupérer tous les tournois depuis la DB
 try {
@@ -28,9 +31,11 @@ try {
             <h2 class="mb-0"><i class="fas fa-trophy me-2 text-warning"></i>Gestion des Tournois</h2>
             <small class="text-muted">Total: <?= count($tournois) ?> tournoi(s)</small>
         </div>
+        <?php if ($isAdmin): ?>
         <a href="create.php" class="btn btn-primary">
             <i class="fas fa-plus me-1"></i> Nouveau Tournoi
         </a>
+        <?php endif; ?>
     </div>
 
     <!-- Message erreur -->
@@ -66,7 +71,7 @@ try {
                             <th>Nom du Tournoi</th>
                             <th>Date de début</th>
                             <th>Statut</th>
-                            <th class="text-center">Actions</th>
+                            <th class="text-center">Détails</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -90,25 +95,28 @@ try {
                                     <?php
                                         $statut = $tournoi['statut'];
                                         $badge = match($statut) {
-                                            'En cours'  => 'bg-success',
-                                            'À venir'   => 'bg-primary',
-                                            'Terminé'   => 'bg-secondary',
+                                            'en_cours'      => 'bg-success',
+                                            'inscription'   => 'bg-primary',
+                                            'configuration' => 'bg-warning text-dark',
+                                            'termine'       => 'bg-secondary',
+                                            'annule'        => 'bg-danger',
                                             default     => 'bg-dark'
                                         };
                                     ?>
                                     <span class="badge <?= $badge ?>">
-                                        <?= htmlspecialchars($statut) ?>
+                                        <?= ucfirst(str_replace('_', ' ', htmlspecialchars($statut))) ?>
                                     </span>
                                 </td>
                                 <td class="text-center">
-                                    <a href="bracket.php?id=<?= $tournoi['id'] ?>" 
-                                       class="btn btn-sm btn-primary me-1" title="Gérer">
-                                        <i class="fas fa-sitemap"></i>
-                                    </a>
                                     <a href="standings.php?id=<?= $tournoi['id'] ?>" 
                                        class="btn btn-sm btn-info text-white me-1" title="Classement">
                                         <i class="fas fa-list-ol"></i>
                                     </a>
+                                    <a href="bracket.php?id=<?= $tournoi['id'] ?>" 
+                                       class="btn btn-sm btn-primary me-1" title="Arbre">
+                                        <i class="fas fa-sitemap"></i>
+                                    </a>
+                                    <?php if ($isAdmin): ?>
                                     <a href="edit.php?id=<?= $tournoi['id'] ?>" 
                                        class="btn btn-sm btn-warning text-white me-1" title="Modifier">
                                         <i class="fas fa-edit"></i>
@@ -118,6 +126,7 @@ try {
                                        onclick="return confirm('Voulez-vous vraiment supprimer ce tournoi ?')">
                                         <i class="fas fa-trash"></i>
                                     </a>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
